@@ -5,6 +5,7 @@ from fastapi.responses import Response
 
 from common import root_endpoint_v1
 from schemas.user import UserRequest, UserResponse
+from services.user import UserOperator, get_user_operator
 
 
 router = APIRouter(
@@ -15,6 +16,6 @@ router = APIRouter(
 
 
 @router.post("", response_model=UserResponse, status_code=201)
-async def create_user(user: UserRequest):
-    return UserResponse(first_name=user.first_name,
-                        second_name=user.second_name)
+async def create_user(user_request: UserRequest,
+                      user_operator: UserOperator = Depends(get_user_operator)):
+    return await user_operator.create_user(user_request)
